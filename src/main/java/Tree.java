@@ -4,6 +4,9 @@ import java.util.Set;
 
 public class Tree<T extends Comparable<T>> implements Set<T> {
 
+    private Node<T> root = null;
+    private int size = 0;
+
     public int size() {
         return 0;
     }
