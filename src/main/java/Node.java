@@ -1,10 +1,10 @@
-class Node<T> {
+class Node<T extends Comparable<T>> {
     T key;
     int height;
     Node<T> left;
     Node<T> right;
 
-    Node (T key) {
+    Node(T key) {
         this.key = key;
         height = 1;
         // ???

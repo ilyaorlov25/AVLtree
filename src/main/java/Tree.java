@@ -7,6 +7,54 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
     private Node<T> root = null;
     private int size = 0;
 
+    private Node<T> rotateRight(Node<T> node) {
+        Node<T> left = node.left;
+        node.left = left.right;
+        left.right = node;
+        node.fixHeight();
+        left.fixHeight();
+        return left;
+    }
+
+    private Node<T> rotateLeft(Node<T> node) {
+        Node<T> right = node.right;
+        node.right = right.left;
+        right.left = node;
+        node.fixHeight();
+        right.fixHeight();
+        return right;
+    }
+
+    private Node<T> balance(Node<T> node) {
+        node.fixHeight();
+
+        if (node.balanceFactor() == 2) {
+            if (node.right.balanceFactor() < 0)
+                node.right = rotateRight(node.right);
+            return rotateLeft(node);
+        }
+
+        if (node.balanceFactor() == -2) {
+            if (node.left.balanceFactor() > 0)
+                node.left = rotateLeft(node.left);
+            return rotateRight(node);
+        }
+
+        return node;
+    }
+
+    private Node<T> insert(Node<T> root, T key) {
+        // Вставить ключ k в дерево с корнем root
+        if (root == null) return new Node<T>(key);
+
+        int comparison = key.compareTo(root.key);
+        if (comparison < 0)
+            root.left = insert(root.left, key);
+        else
+            root.right = insert(root.right, key);
+        return balance(root);
+    }
+
     public int size() {
         return 0;
     }
