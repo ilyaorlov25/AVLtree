@@ -7,9 +7,6 @@ class Node<T extends Comparable<T>> {
     Node(T key) {
         this.key = key;
         height = 1;
-        // ???
-        left = null;
-        right  = null;
     }
 
     int balanceFactor() {

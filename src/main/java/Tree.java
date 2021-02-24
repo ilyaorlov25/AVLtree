@@ -6,7 +6,9 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     private Node<T> root = null;
     private int size = 0;
+    private boolean changed = false;
 
+    // Правый поворот
     private Node<T> rotateRight(Node<T> node) {
         Node<T> left = node.left;
         node.left = left.right;
@@ -16,6 +18,7 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
         return left;
     }
 
+    // Левый поворот
     private Node<T> rotateLeft(Node<T> node) {
         Node<T> right = node.right;
         node.right = right.left;
@@ -25,6 +28,8 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
         return right;
     }
 
+    // Балансировка поддерева с корнем в узле node
+    // (когда высоты поддеревьев различаются на 2)
     private Node<T> balance(Node<T> node) {
         node.fixHeight();
 
@@ -45,14 +50,30 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     // Вставить ключ key в поддерево с корнем в узле node
     private Node<T> insert(Node<T> node, T key) {
-        if (node == null) return new Node<T>(key);
+        if (node == null) {
+            changed = true;
+            size++;
+            return new Node<T>(key);
+        }
 
         int comparison = key.compareTo(node.key);
         if (comparison < 0)
             node.left = insert(node.left, key);
-        else
+        else if (comparison > 0)
             node.right = insert(node.right, key);
+        else return node;
+
         return balance(node);
+    }
+
+    // Поиск узла с ключом key в поддереве с корнем в узле node
+    private boolean find(Node<T> node, T key) {
+        if (node == null) return false;
+
+        int comparison = key.compareTo(node.key);
+        if (comparison > 0) return find(node.right, key);
+        else if (comparison < 0) return find(node.left, key);
+        else return true;
     }
 
     // Поиск минимального ключа в поддереве с корнем в узле node
@@ -77,16 +98,17 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
         } else if (comparison > 0) {
             node.right = remove(node.right, key);
         } else {
-            Node<T> left = node.left;
-            Node<T> right = node.right;
-            // ДОДЕЛАТЬ
+            changed = true;
+            size--;
+            if (node.right == null) return node.left;
+            if (node.left == null) return node.right;
+            Node<T> temp = node;
+            node = findMin(temp.right);
+            node.right = removeMin(temp.right);
+            node.left = temp.left;
+            return balance(node);
         }
-        // ДОДЕЛАТЬ
-        return null;
-    }
-
-    private Node<T> find(T key) {
-        return null;
+        return balance(node);
     }
 
     @Override
@@ -96,7 +118,7 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
@@ -121,7 +143,9 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     @Override
     public boolean add(T t) {
-        return false;
+        changed = false;
+        root = insert(root, t);
+        return changed;
     }
 
     @Override
