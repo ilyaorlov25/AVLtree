@@ -94,25 +94,20 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     // Удаление узла с ключом key из поддерева с корнем node
     private Node<T> remove(Node<T> node, T key) {
-        if (node == null) return null;
-
-        int comparison = key.compareTo(node.key);
-        if (comparison < 0) {
-            node.left = remove(node.left, key);
-        } else if (comparison > 0) {
-            node.right = remove(node.right, key);
+        Node<T> found = find(node, key);
+        if (found == null) {
+            return null;
         } else {
             changed = true;
             size--;
-            if (node.right == null) return node.left;
-            if (node.left == null) return node.right;
-            Node<T> temp = node;
-            node = findMin(temp.right);
-            node.right = removeMin(temp.right);
-            node.left = temp.left;
-            return balance(node);
+            if (found.right == null) return found.left;
+            if (found.left == null) return found.right;
+            Node<T> temp = found;
+            found = findMin(temp.right);
+            found.right = removeMin(temp.right);
+            found.left = temp.left;
+            return balance(found);
         }
-        return balance(node);
     }
 
     @Override
@@ -204,7 +199,7 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
     }
 
     public int checkRootSubtrees() {
-        return Math.abs(root.left.height - root.right.height);
+        return Math.abs(root.balanceFactor());
     }
 
     public int getHeight() {
