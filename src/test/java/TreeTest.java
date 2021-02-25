@@ -15,6 +15,7 @@ class TreeTest {
         tree.add(6);
 
         assertTrue(tree.checkRootSubtrees() < 2);
+        assertTrue(tree.getHeight() < 6);
     }
 
     @Test
@@ -64,5 +65,45 @@ class TreeTest {
         assertEquals(1, tree.size());
         assertFalse(tree.remove(3));
         assertEquals(1, tree.size());
+    }
+
+    @Test
+    void equals() {
+        Tree<Integer> tree1 = new Tree<>();
+        Tree<Integer> tree2 = new Tree<>();
+
+        tree1.add(1);
+        tree1.add(2);
+        tree1.add(3);
+
+        tree2.add(1);
+        tree2.add(2);
+        tree2.add(3);
+        assertEquals(tree1, tree2);
+        assertEquals(tree2, tree1);
+
+        tree1.remove(2);
+        tree2.remove(2);
+        assertEquals(tree1, tree2);
+        assertEquals(tree2, tree1);
+    }
+
+    @Test
+    void hash() {
+        Tree<Integer> tree1 = new Tree<>();
+        Tree<Integer> tree2 = new Tree<>();
+
+        tree1.add(1);
+        tree1.add(2);
+        tree1.add(3);
+
+        tree2.add(1);
+        tree2.add(2);
+        tree2.add(3);
+        assertEquals(tree1.hashCode(), tree2.hashCode());
+
+        tree1.remove(2);
+        tree2.remove(2);
+        assertEquals(tree1.hashCode(), tree2.hashCode());
     }
 }

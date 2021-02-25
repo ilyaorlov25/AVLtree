@@ -1,5 +1,6 @@
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 public class Tree<T extends Comparable<T>> implements Set<T> {
@@ -188,7 +189,25 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tree<?> tree = (Tree<?>) o;
+        return size == tree.size &&
+                Objects.equals(root, tree.root);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(root, size);
+    }
+
     public int checkRootSubtrees() {
         return Math.abs(root.left.height - root.right.height);
+    }
+
+    public int getHeight() {
+        return root.height;
     }
 }
