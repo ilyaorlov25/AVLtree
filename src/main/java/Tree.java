@@ -67,13 +67,16 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
     }
 
     // Поиск узла с ключом key в поддереве с корнем в узле node
-    private boolean find(Node<T> node, T key) {
-        if (node == null) return false;
+    private Node<T> find(Node<T> node, T key) {
+        if (node == null) return null;
 
         int comparison = key.compareTo(node.key);
-        if (comparison > 0) return find(node.right, key);
-        else if (comparison < 0) return find(node.left, key);
-        else return true;
+        if (comparison > 0)
+            return find(node.right, key);
+        else if (comparison < 0)
+            return find(node.left, key);
+        else
+            return node;
     }
 
     // Поиск минимального ключа в поддереве с корнем в узле node
@@ -113,7 +116,7 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
@@ -123,7 +126,10 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        @SuppressWarnings("unchecked")
+        T t = (T) o;
+        Node<T> node = find(root, t);
+        return node != null && t.compareTo(node.key) == 0;
     }
 
     @Override
@@ -150,7 +156,11 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        @SuppressWarnings("unchecked")
+        T t = (T) o;
+        changed = false;
+        root = remove(root, t);
+        return changed;
     }
 
     @Override
@@ -176,5 +186,9 @@ public class Tree<T extends Comparable<T>> implements Set<T> {
     @Override
     public void clear() {
 
+    }
+
+    public int checkRootSubtrees() {
+        return Math.abs(root.left.height - root.right.height);
     }
 }
